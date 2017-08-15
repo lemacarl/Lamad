@@ -1,0 +1,8 @@
+#High
+- Enroll for more than one course
+
+#Extra Features
+- Render `Course` column in Lessons table
+- Render `Number of Lessons` column in Courses table
+- Change `Course` in Lessons Quick Edit
+- Enable reordering course lessons in lessons meta box
