@@ -13,18 +13,39 @@ class Lamad_Route_Controller{
 	 * Register custom endpoints
 	 */
 	public function register_routes(){
-		register_rest_route( 'lamad/v1', '/lessons/course=(?P<course>\d+)', array(
-			'methods'		=> 'GET',
-			'callback'		=> array( $this, 'get_course_lessons' )
+		/**
+		 * Modify an existing course
+		 */
+		register_rest_route( 'lamad/v1', 'course/(?P<id>\d+)/user=(?P<user>\d+)', array(
+			array(
+				'methods'				=> 'PUT',
+				'callback'				=> array( $this, 'complete_course' ),
+			),
+			array(
+				'methods'				=> 'GET',
+				'callback'				=> array( $this, 'get_course_status' )
+			)
 		) );
+		
+		/**
+		 * Get all courses enrolled by user 
+		 */
 		register_rest_route( 'lamad/v1', 'courses/user=(?P<user>\d+)', array(
 			'methods'				=> 'GET',
 			'callback'				=> array( $this, 'get_courses' ),
 		) );
+		
+		/**
+		 * Get lesson content
+		 */
 		register_rest_route( 'lamad/v1', 'lesson/(?P<id>\d+)', array(
 			'methods'				=> 'GET',
 			'callback'				=> array( $this, 'get_lesson_content' ),
 		) );
+		
+		/**
+		 * Modify an exisiting lesson
+		 */
 		register_rest_route( 'lamad/v1', 'lesson/(?P<id>\d+)/user=(?P<user>\d+)', array(
 			array(
 				'methods'				=> 'PUT',
@@ -35,6 +56,44 @@ class Lamad_Route_Controller{
 				'callback'				=> array( $this, 'get_lesson_status' ),
 			)
 		) );
+		
+		/**
+		 * Get all lessons associated with a given course
+		 */
+		register_rest_route( 'lamad/v1', '/lessons/course=(?P<course>\d+)', array(
+			'methods'		=> 'GET',
+			'callback'		=> array( $this, 'get_course_lessons' )
+		) );
+	}
+	
+	public function get_course_status( $request ){
+		$status = false;
+		$course = get_post( $request['id'] );
+		if( is_object( $course ) ){
+			$status = get_user_meta( $request['user'], '_completed_' . sanitize_title( $course->post_title ), true );
+			$status = $status == "" ? false : true;
+		}
+		return $status;
+	}
+	
+	public function complete_course( $request ){
+		$course = get_post( $request['id'] );
+		$user_id = $request['user'];
+		$lessons = get_posts( array(
+			'post_type'		=> 'lesson',
+			'meta_key'		=> '_course_id',
+			'meta_value'	=> $request['id'],
+		) );
+		foreach( $lessons as $lesson ){
+			if( '' == get_user_meta( $user_id, '_completed_' . sanitize_title( $lesson->post_title ), true ) ){
+				break;
+			}
+			if( is_object( $course ) ){
+				update_user_meta( $user_id, '_completed_' . sanitize_title( $course->post_title ), true );
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public function get_lesson_status( $request ){
@@ -51,7 +110,9 @@ class Lamad_Route_Controller{
 		$lesson = get_post( $request['id'] );
 		if( is_object( $lesson ) ){
 			update_user_meta( $request['user'], '_completed_' . sanitize_title( $lesson->post_title ), true );
+			return true;
 		}
+		return false;
 	}
 	
 	public function get_lesson_content( $request ){
@@ -59,6 +120,7 @@ class Lamad_Route_Controller{
 		$_lesson = array();
 		if( is_object( $lesson ) ){
 			$_lesson['id'] = $lesson->ID;
+			$_lesson['title'] = $lesson->post_title;
 			$_lesson['content'] = apply_filters( 'the_content', $lesson->post_content );
 		}
 		return $_lesson;

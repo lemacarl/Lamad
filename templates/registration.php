@@ -54,13 +54,13 @@
 			<label for='confirm_password'>Confirm Password</label>
 			<input type="password" name="confirm_password" id="confirm_password" required />
 		</div>
+		<div class="g-recaptcha" data-sitekey="6LdtwCwUAAAAACj5Xz-cFOR9xVNYTRCEUHKJjUJI"></div>	
 		<div class="form-register__submit">
 			<input type="hidden" value="lamad_registration" name="action" />
 			<?php wp_nonce_field( 'lamad-registration', 'lamad_nonce' ); ?>
 			<input type="submit" name="submit" id="submit" value="Register" />
 			<span class="register-spinner hidden"><img src="<?php echo LAMAD_PLUGIN_URL . 'assets/images/spinner-2x.gif' ?>" /></span>
 		</div>
-		<div class="g-recaptcha" data-sitekey="6LdtwCwUAAAAACj5Xz-cFOR9xVNYTRCEUHKJjUJI"></div>	
 	</form>
 	<span class="register-response"></span>
 </div>
