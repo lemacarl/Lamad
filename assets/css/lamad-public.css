@@ -1,3 +1,6 @@
 .hidden{
     display: none;
 }
+.form-register__input-wrapper label{
+    display: block;
+}
