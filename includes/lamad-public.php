@@ -26,6 +26,16 @@ class Lamad_Public{
 		
 		// Set email content type to text/html
 		add_action( 'wp_mail_content_type', array( $this, 'set_mail_content_type' ) );
+		
+		add_action( 'ajax_query_attachments_args', array( $this, 'restrict_media_to_user' ) );
+	}
+	
+	public function restrict_media_to_user( $query = array() ){
+		$user_id = get_current_user_id();
+		if( $user_id ){
+			$query['author'] = $user_id;
+		}
+		return $query;
 	}
 	
 	public function set_mail_content_type(){
