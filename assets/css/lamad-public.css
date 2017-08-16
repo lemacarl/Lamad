@@ -1,6 +1,29 @@
 .hidden{
     display: none;
 }
+
 .form-register__input-wrapper label{
     display: block;
+}
+
+.dashboard-controller .sidenav-toolbar h2{
+    margin: 0;
+    color: #fff;
+}
+.dashboard-controller .site-content-toolbar h2, .dashboard-controller .sidenav-toolbar h6{
+    margin: 0;
+    color: #010101;
+}
+.dashboard-controller .site-content-toolbar{
+    background: #f6f6f6;
+}
+.dashboard-controller md-sidenav.sidenav-toolbar{
+    position: static;
+}
+.dashboard-controller md-select, .dashboard-controller md-input-container{
+    margin: 5px 0;
+}
+
+audio.wp-audio-shortcode{
+    visibility: visible !important;
 }

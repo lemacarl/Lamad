@@ -1,5 +1,8 @@
 ( function ( $ ) {
     $( document ).ready( function () {
+        if ( lamadPublic.isDashboard ) {
+            $( '.dashboard-controller' ).height( $( window ).height() );
+        }
         var isGoogleRecaptchaValid = function () {
             if ( 'undefined' !== typeof ( grecaptcha ) ) {
                 if ( !grecaptcha.getResponse() ) {

@@ -90,6 +90,22 @@ class Lamad_Route_Controller{
 			}
 			if( is_object( $course ) ){
 				update_user_meta( $user_id, '_completed_' . sanitize_title( $course->post_title ), true );
+				// Send congratulatory email to student
+				$user = get_user_by( 'id', $user_id );
+				ob_start();
+				require( LAMAD_PLUGIN_DIR . '/templates/email-coursecomplete.php' );
+				$message = ob_get_clean();
+				$subject = __( 'Congratulations', 'lamad' );
+				wp_mail( $user->user_email, $subject, $message );
+
+				// Notify instructors about student completion
+				$instructors = get_users( array( 'role' => 'instructor' ) );
+				$profile = get_edit_user_link( $user_id );
+				foreach( $instructors as $instructor ){
+					$message = "<p>The following user has completed the {$course->post_title} course: $profile</p>";
+					$subject = __( 'Course Completed', 'lamad' );
+					wp_mail( $instructor->user_email, $subject, $message );
+				}
 				return true;
 			}
 		}
