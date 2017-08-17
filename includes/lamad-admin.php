@@ -25,6 +25,29 @@ class Lamad_Admin{
 		//Save custom fields in student user profile
         add_action('personal_options_update', array( $this, 'save_student_profile' ));
         add_action('edit_user_profile_update', array( $this, 'save_student_profile' ));
+		
+		// Filter student admin dashboard
+		add_action( 'admin_menu', array( $this, 'remove_admin_menus' ),9999 );
+	}
+	
+	/**
+	 * Remove admin menus from student admin dashboard
+	 * @global WP_User $current_user
+	 * @global WP_Menu $menu
+	 */
+	public function remove_admin_menus(){
+		global $current_user;
+		if( isset( $current_user->roles ) && is_array(  $current_user->roles  ) && in_array( 'student', $current_user->roles ) ){
+			global $menu;
+			$allowed_menus = array( 'profile.php' );
+			foreach($menu as $menu_item ){
+				if( !in_array( $menu_item[2], $allowed_menus ) ){
+					remove_menu_page( $menu_item[2] );
+				}
+			}
+			remove_menu_page( 'jetpack' );
+		}
+		
 	}
 
 	/**
