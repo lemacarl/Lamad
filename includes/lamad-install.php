@@ -40,7 +40,6 @@ class Lamad_Install{
 		) );
 		add_role( 'instructor', __( 'Instructor', 'lamad' ), array(
 			'read'			=> true,
-			'edit_posts'	=> true,
 			'upload_files'	=> true,
 			'list_users'	=> true
 		) );
