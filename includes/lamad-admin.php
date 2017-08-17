@@ -45,6 +45,9 @@ class Lamad_Admin{
 					remove_menu_page( $menu_item[2] );
 				}
 			}
+		}
+
+		if( ( $current_user->roles ) && is_array(  $current_user->roles  ) && ! in_array( 'administrator', $current_user->roles  ) ){
 			remove_menu_page( 'jetpack' );
 		}
 		
