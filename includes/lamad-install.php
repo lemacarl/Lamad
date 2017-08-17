@@ -30,6 +30,11 @@ class Lamad_Install{
 	 * Create custom user roles
 	 */
 	private function create_custom_roles(){
+		//Reset roles on activation
+		remove_role( 'student' );
+		remove_role( 'instructor' );
+		
+		//Create roles
 		add_role( 'student', __( 'Student', 'lamad' ), array(
 			'read'		=> true
 		) );
