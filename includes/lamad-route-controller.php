@@ -14,6 +14,14 @@ class Lamad_Route_Controller{
 	 */
 	public function register_routes(){
 		/**
+		 * Handle action requests
+		 */
+		register_rest_route( 'lamad/v1', '/default', array(
+			'methods'	=> 'POST',
+			'callback'	=> array( $this, 'handle_request' )
+		) );
+		
+		/**
 		 * Modify an existing course
 		 */
 		register_rest_route( 'lamad/v1', 'course/(?P<id>\d+)/user=(?P<user>\d+)', array(
@@ -64,6 +72,31 @@ class Lamad_Route_Controller{
 			'methods'		=> 'GET',
 			'callback'		=> array( $this, 'get_course_lessons' )
 		) );
+	}
+	
+	public function handle_request( $request ){
+		if( ! isset( $request['action'] ) ){
+			return;
+		}
+        $action = $request['action'];
+        if( method_exists( $this, $action . '_action') ){
+            return $this->{$action . '_action'}( $request );
+        }
+	}
+	
+	/**
+	 * Handle send email action
+	 * @param WP_Rest_Request $request
+	 */
+	public function send_message_action( $request ){
+		$sent = true;
+		$user = get_user_by( 'id', $request['user'] );
+		$lesson = get_post( $request['lesson'] );
+		$instructors = get_users( array( 'role' => 'instructor' ) );
+		foreach( $instructors as $instructor ){
+			$sent = wp_mail( $instructor->user_email, "Message From Lesson: {$lesson->post_title}", $request['message'], array( "Reply-To: {$user->first_name} {$user->last_name} <{$user->user_email}>" ) );
+		}
+		return $sent;
 	}
 	
 	public function get_course_status( $request ){

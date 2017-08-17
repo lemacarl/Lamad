@@ -6,7 +6,7 @@ get_header();
 ?>
 <div id="primary" class="content-area" ng-app="studentDashboard" ng-cloak>
 	<main class="dashboard-controller" ng-controller="DashboardController" layout="row">
-		<md-sidenav class="md-sidenav-left sidenav-toolbar" md-disable-backdrop md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')" md-whiteframe="4" layout="column" >
+		<md-sidenav class="md-sidenav-left sidenav-toolbar" md-disable-backdrop md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')" md-whiteframe="4" >
 			<md-toolbar>
 				<h2 class="md-toolbar-tools">Lessons</h2>
 			</md-toolbar>
@@ -16,13 +16,17 @@ get_header();
 					<md-option ng-repeat="course in courses" ng-value="course.id" >{{course.title}}</md-option>
 				</md-select>
 			</md-input-container>
+			
 			<md-list>
 				<md-list-item ng-repeat="lesson in lessons" >
 					<a href="#" ng-click="getContent( lesson.id, lessons[ $index - 1 ].id )" >{{lesson.title}}</a>
 				</md-list-item>
 			</md-list>
-			<md-button ng-if="courseID" class="md-raised md-primary" ng-disabled="isCourseComplete" ng-click="completeCourse()" >Complete Course</md-button>
+			<div>
+				<md-button ng-if="courseID" class="md-raised md-primary" ng-disabled="isCourseComplete" ng-click="completeCourse()" >Complete Course</md-button>
+			</div>
 		</md-sidenav>
+		
 		<md-content flex>
 			<md-toolbar class="site-content-toolbar" md-whiteframe="4" >
 				<div class="md-toolbar-tools">
@@ -33,9 +37,25 @@ get_header();
 					<h2 ng-bind ="lesson.title" flex md-truncate ></h2>
 				</div>
 			</md-toolbar>
-			<div ng-if="!prevLessonComplete" layout-padding><p>Please complete the previous lesson.</p></div>
+			
 			<div ng-bind-html="lesson.content" layout-padding></div>
-			<md-button ng-if="lesson.content && ! disableLessonCompleteButton" class="md-raised md-primary" ng-disabled="isLessonComplete" ng-click="completeLesson( lesson.id )" >Complete Lesson</md-button>
+			<div>
+				<md-button ng-if="lesson.content && ! disableLessonCompleteButton" class="md-raised md-primary" ng-disabled="isLessonComplete" ng-click="completeLesson( lesson.id )" >Complete Lesson</md-button>
+			</div>
+
+			<md-content ng-if="lesson.content && ! disableLessonMessage" flex layout-padding>
+				<p>If you have any question or comment concerning the above lesson, enter it below and hit send and we shall get back to you via email shortly.</p>
+				<form name="contactForm">
+					<md-input-container class="md-block">
+						<label>Message</label>
+						<textarea ng-model="$parent.message"></textarea>
+					</md-input-container>
+					<div>
+						<md-button ng-click="sendMessage(lesson)" class="md-raised">Send</md-button>
+						<p>{{$parent.msgResponse}}</p>
+					</div>
+				</form>
+			</md-content>
 		</md-content>
 	</main>
 </div>
