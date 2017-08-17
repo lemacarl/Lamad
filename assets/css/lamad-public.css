@@ -27,3 +27,9 @@
 audio.wp-audio-shortcode{
     visibility: visible !important;
 }
+
+.dashboard-logo{
+    margin: 0 auto;
+    width: 70%;
+    display: block;
+}
