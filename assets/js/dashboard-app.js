@@ -52,6 +52,7 @@ app.controller( 'DashboardController', function ( $scope, $http, $sce, $mdSidena
                     $scope.lesson.content = $sce.trustAsHtml( "<p>Please complete the previous lesson.</p>" );
                     $scope.disableLessonCompleteButton = true;
                     $scope.disableLessonMessage = true;
+                    $scope.msgResponse = '';
                 }
             } );
         }
